@@ -2,6 +2,11 @@
 
 int bytes_necesarios(int cantidad_posiciones)
 {
+    // si no hay fichas, tampoco se necesita memoria
+    if (cantidad_posiciones <= 0) {
+        return 0;
+    }
+
     // cada ficha ocupa tres bits y al final se redondea al byte siguiente
     int cantidad_bits = cantidad_posiciones * 3;
     return (cantidad_bits + 7) / 8;
