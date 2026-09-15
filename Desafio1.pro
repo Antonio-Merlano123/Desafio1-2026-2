@@ -5,7 +5,13 @@ CONFIG -= qt
 
 SOURCES += \
         main.cpp \
-        interfaz.cpp
+        interfaz.cpp \
+        bits.cpp \
+        tablero.cpp \
+        juego.cpp
 
 HEADERS += \
-        interfaz.h
+        interfaz.h \
+        bits.h \
+        tablero.h \
+        juego.h
