@@ -27,18 +27,28 @@ void limpiar_bytes(unsigned char* memoria, int cantidad_bytes)
 
 unsigned char leer_ficha(const unsigned char* memoria, int indice_ficha)
 {
-    // la posicion de cada ficha se cuenta desde el bit menos significativo
+    // esta funcion lee una ficha compactada en 3 bits.
+    // cada ficha ocupa 3 posiciones de bits en el bloque continuo.
+    // cuando una ficha cruza el borde de un byte, se juntan dos partes
+    // para leer el valor completo sin tocar el resto del bloque.
+    if (memoria == nullptr || indice_ficha < 0) {
+        return 0;
+    }
+
     int bit_inicial = indice_ficha * 3;
     int indice_byte = bit_inicial / 8;
     int desplazamiento = bit_inicial % 8;
 
+    // si la ficha queda completa dentro de un solo byte, solo hace falta mover el byte
+    // hacia la derecha y quedarnos con los 3 bits de la mascara 00000111.
     if (desplazamiento <= 5) {
-        // en este caso los tres bits caben completos en un solo byte
         unsigned char byte_actual = memoria[indice_byte];
         return static_cast<unsigned char>((byte_actual >> desplazamiento) & 7);
     }
 
-    // aqui la ficha cruza al byte siguiente y toca unir las dos partes
+    // si la ficha cruza al siguiente byte, se recogen dos trozos:
+    // la parte que queda en el byte actual y la parte que empieza en el byte siguiente.
+    // luego se juntan y se limpia la parte extra con una mascara final.
     unsigned char parte_baja = static_cast<unsigned char>(memoria[indice_byte] >> desplazamiento);
     unsigned char parte_alta = static_cast<unsigned char>(memoria[indice_byte + 1] << (8 - desplazamiento));
     return static_cast<unsigned char>((parte_baja | parte_alta) & 7);
