@@ -14,6 +14,11 @@ int bytes_necesarios(int cantidad_posiciones)
 
 void limpiar_bytes(unsigned char* memoria, int cantidad_bytes)
 {
+    // si no hay bloque o bytes, no hay nada que limpiar
+    if (memoria == nullptr || cantidad_bytes <= 0) {
+        return;
+    }
+
     // el bloque empieza limpio para no dejar datos viejos en el tablero
     for (int indice = 0; indice < cantidad_bytes; ++indice) {
         memoria[indice] = 0;
