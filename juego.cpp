@@ -97,20 +97,27 @@ int eliminar_marcadas()
     return borradas;
 }
 
+// recorre cada columna desde abajo hacia arriba haciendo caer las fichas sobre los espacios libres
 void aplicar_gravedad()
 {
-    // columna por columna: las fichas reales bajan, los huecos quedan arriba
-    for (int c = 0; c < obtener_columnas(); ++c) {
-        int dest = obtener_filas() - 1;
-        for (int f = obtener_filas() - 1; f >= 0; --f) {
-            unsigned char tipo = obtener_ficha(f, c);
-            if (tipo != ficha_vacia) {
-                colocar_ficha(dest, c, tipo);
-                --dest;
+    int filas_totales = obtener_filas();
+    int cols_totales = obtener_columnas();
+
+    for (int c = 0; c < cols_totales; ++c) {
+        int pos_libre = filas_totales - 1;
+        for (int f = filas_totales - 1; f >= 0; --f) {
+            unsigned char actual = obtener_ficha(f, c);
+            if (actual != ficha_vacia) {
+                if (f != pos_libre) {
+                    colocar_ficha(pos_libre, c, actual);
+                }
+                --pos_libre;
             }
         }
-        while (dest >= 0)
-            colocar_ficha(dest--, c, ficha_vacia);
+        while (pos_libre >= 0) {
+            colocar_ficha(pos_libre, c, ficha_vacia);
+            --pos_libre;
+        }
     }
 }
 
