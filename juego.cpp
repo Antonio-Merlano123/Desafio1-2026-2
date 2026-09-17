@@ -19,12 +19,17 @@ unsigned char ficha_aleatoria()
     return static_cast<unsigned char>((semilla >> 16) % 6);
 }
 
+// recorre el tablero buscando espacios vacios para rellenarlos con fichas nuevas aleatorias
 void llenar_vacios()
 {
-    for (int f = 0; f < obtener_filas(); ++f) {
-        for (int c = 0; c < obtener_columnas(); ++c) {
-            if (obtener_ficha(f, c) == ficha_vacia)
+    int filas_totales = obtener_filas();
+    int cols_totales = obtener_columnas();
+
+    for (int f = 0; f < filas_totales; ++f) {
+        for (int c = 0; c < cols_totales; ++c) {
+            if (obtener_ficha(f, c) == ficha_vacia) {
                 colocar_ficha(f, c, ficha_aleatoria());
+            }
         }
     }
 }
