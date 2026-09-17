@@ -50,12 +50,10 @@ bool buscar_horizontal()
     return encontro;
 }
 
-bool marcar_combinaciones()
+// marca las fichas que forman trio vertical, devuelve true si encontro alguna
+bool buscar_vertical()
 {
-    // primero horizontal, luego vertical.
-    // dos pasadas antes de borrar para no perder fichas que forman cruz o L.
-    bool encontro = buscar_horizontal();
-
+    bool encontro = false;
     int filas = obtener_filas();
     int cols  = obtener_columnas();
 
@@ -70,8 +68,15 @@ bool marcar_combinaciones()
             }
         }
     }
-
     return encontro;
+}
+
+bool marcar_combinaciones()
+{
+    // primero horizontal, luego vertical para marcar cruces en T o L completas
+    bool h = buscar_horizontal();
+    bool v = buscar_vertical();
+    return h || v;
 }
 
 int eliminar_marcadas()
