@@ -19,6 +19,7 @@ void mostrar_bytes()
 
 void mostrar_tablero()
 {
+    // los numeros de arriba ayudan a ubicar una columna sin adivinar la posicion
     std::cout << "tablero de fichas:\n";
     std::cout << "    ";
     for (int columna = 0; columna < obtener_columnas(); ++columna) {
@@ -35,12 +36,29 @@ void mostrar_tablero()
     }
 }
 
+void pedir_eliminacion()
+{
+    int fila;
+    int columna;
+
+    // por ahora se elimina una sola ficha para probar el recorrido completo
+    std::cout << "fila de la ficha que desea eliminar: ";
+    std::cin >> fila;
+    std::cout << "columna de la ficha que desea eliminar: ";
+    std::cin >> columna;
+
+    eliminar_ficha(fila, columna);
+}
+
 void mostrar_interfaz()
 {
     std::cout << "sweet crush - desafio I\n"; // nombre del juego
     std::cout << "proyecto iniciado correctamente\n"; // inicio basico
 
     iniciar_juego(2, 3);
+    mostrar_bytes();
+    mostrar_tablero();
+    pedir_eliminacion();
     mostrar_bytes();
     mostrar_tablero();
     destruir_tablero();
