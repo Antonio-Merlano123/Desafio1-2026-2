@@ -1,12 +1,12 @@
 #include "tablero.h"
 #include "bits.h"
 
-unsigned char* memoria = nullptr;
-int filas = 0;
-int columnas = 0;
-int bytes = 0;
+unsigned char* memoria = nullptr; // bloque de bytes del tablero
+int filas = 0; // cantidad de filas
+int columnas = 0; // cantidad de columnas
+int bytes = 0; // bytes usados en la memoria
 
-// convierte una coordenada del tablero en una posicion seguida
+// convierte fila y columna en una sola posicion del bloque
 int indice_de(int fila, int columna, int cantidad_columnas)
 {
     return fila * cantidad_columnas + columna;
@@ -14,7 +14,7 @@ int indice_de(int fila, int columna, int cantidad_columnas)
 
 void reconstruir(int nuevas_filas, int nuevas_columnas, int posicion_fila, int posicion_columna, bool insertar_fila, bool insertar_columna)
 {
-    // se arma otro bloque para no perder las fichas al cambiar las dimensiones
+    // crea otro bloque para mover las fichas sin perder datos
     int nuevas_posiciones = nuevas_filas * nuevas_columnas;
     int nuevos_bytes = bytes_necesarios(nuevas_posiciones);
     unsigned char* nueva_memoria = new unsigned char[nuevos_bytes];
@@ -50,7 +50,7 @@ void reconstruir(int nuevas_filas, int nuevas_columnas, int posicion_fila, int p
         }
     }
 
-    // al crecer siempre hace falta espacio; al reducir se revisa el 65 por ciento
+    // si crece o queda muy lleno, se hace otro bloque
     bool necesita_nuevo_bloque = nuevos_bytes > bytes
         || nuevos_bytes * 100 < bytes * 65;
 
@@ -73,18 +73,34 @@ void reconstruir(int nuevas_filas, int nuevas_columnas, int posicion_fila, int p
 }
 void crear_tablero(int nuevas_filas, int nuevas_columnas)
 {
-    // la reserva inicial solo tiene el tamano que el usuario pidio
+    // si el tablero llega con dimensiones invalidas, se limpia y se deja vacio
     destruir_tablero();
+
+    if (nuevas_filas <= 0 || nuevas_columnas <= 0) {
+        filas = 0;
+        columnas = 0;
+        bytes = 0;
+        return;
+    }
+
     filas = nuevas_filas;
     columnas = nuevas_columnas;
     bytes = bytes_necesarios(filas * columnas);
+
+    if (bytes <= 0) {
+        filas = 0;
+        columnas = 0;
+        bytes = 0;
+        return;
+    }
+
     memoria = new unsigned char[bytes];
     limpiar_bytes(memoria, bytes);
 }
 
 void destruir_tablero()
 {
-    // toda memoria que se pide aqui se libera en este mismo modulo
+    // libera el bloque y deja todo listo para una nueva partida
     delete[] memoria;
     memoria = nullptr;
     filas = 0;
@@ -114,12 +130,13 @@ unsigned char* obtener_memoria()
 
 unsigned char obtener_ficha(int fila, int columna)
 {
-    // bits se encarga de buscar los tres bits de esta posicion
+    // busca el valor de esa ficha desde la memoria compactada
     return leer_ficha(memoria, indice_de(fila, columna, columnas));
 }
 
 void colocar_ficha(int fila, int columna, unsigned char ficha)
 {
+    // escribe una ficha en la posicion pedida
     escribir_ficha(memoria, indice_de(fila, columna, columnas), ficha);
 }
 
