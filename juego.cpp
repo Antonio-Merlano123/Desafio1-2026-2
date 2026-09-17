@@ -79,18 +79,22 @@ bool marcar_combinaciones()
     return h || v;
 }
 
+// recorre el tablero buscando fichas con marca para ponerlas como hueco libre
 int eliminar_marcadas()
 {
-    int cuantas = 0;
-    for (int f = 0; f < obtener_filas(); ++f) {
-        for (int c = 0; c < obtener_columnas(); ++c) {
+    int borradas = 0;
+    int f_totales = obtener_filas();
+    int c_totales = obtener_columnas();
+
+    for (int f = 0; f < f_totales; ++f) {
+        for (int c = 0; c < c_totales; ++c) {
             if (obtener_ficha(f, c) == ficha_marca) {
                 colocar_ficha(f, c, ficha_vacia);
-                ++cuantas;
+                ++borradas;
             }
         }
     }
-    return cuantas;
+    return borradas;
 }
 
 void aplicar_gravedad()
