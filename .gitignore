@@ -1,8 +1,0 @@
-*.user
-*.user.*
-build-*/
-Makefile
-moc_*.cpp
-qrc_*.cpp
-*.o
-*.obj
