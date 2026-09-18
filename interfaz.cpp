@@ -3,63 +3,103 @@
 #include "tablero.h"
 #include <iostream>
 
+using namespace std;
+
+// muestra los bytes de la memoria en binario
 void mostrar_bytes()
 {
     unsigned char* memoria = obtener_memoria();
 
-    std::cout << "bytes del tablero: ";
-    for (int indice = 0; indice < obtener_bytes(); ++indice) {
+    cout << "bytes del tablero: ";
+    for (int i = 0; i < obtener_bytes(); ++i) {
         for (int bit = 7; bit >= 0; --bit) {
-            std::cout << ((memoria[indice] >> bit) & 1);
+            cout << ((memoria[i] >> bit) & 1);
         }
-        std::cout << ' ';
+        cout << ' ';
     }
-    std::cout << "\n";
+    cout << "\n";
 }
 
+// imprime el tablero con numeritos en filas y columnas
 void mostrar_tablero()
 {
-    // los numeros de arriba ayudan a ubicar una columna sin adivinar la posicion
-    std::cout << "tablero de fichas:\n";
-    std::cout << "    ";
-    for (int columna = 0; columna < obtener_columnas(); ++columna) {
-        std::cout << columna << ' ';
+    cout << "\ntablero de fichas:\n    ";
+    for (int c = 0; c < obtener_columnas(); ++c) {
+        cout << c << ' ';
     }
-    std::cout << "\n";
+    cout << "\n";
 
-    for (int fila = 0; fila < obtener_filas(); ++fila) {
-        std::cout << fila << " | ";
-        for (int columna = 0; columna < obtener_columnas(); ++columna) {
-            std::cout << static_cast<int>(obtener_ficha(fila, columna)) << ' ';
+    for (int f = 0; f < obtener_filas(); ++f) {
+        cout << f << " | ";
+        for (int c = 0; c < obtener_columnas(); ++c) {
+            cout << static_cast<int>(obtener_ficha(f, c)) << ' ';
         }
-        std::cout << "\n";
+        cout << "\n";
     }
 }
 
-void pedir_eliminacion()
-{
-    int fila;
-    int columna;
-
-    // por ahora se elimina una sola ficha para probar el recorrido completo
-    std::cout << "fila de la ficha que desea eliminar: ";
-    std::cin >> fila;
-    std::cout << "columna de la ficha que desea eliminar: ";
-    std::cin >> columna;
-
-    eliminar_ficha(fila, columna);
-}
-
+// bucle del menu para pedir la jugada
 void mostrar_interfaz()
 {
-    std::cout << "sweet crush - desafio I\n"; // nombre del juego
-    std::cout << "proyecto iniciado correctamente\n"; // inicio basico
+    cout << "=== sweet crush - desafio 1 ===\n\n";
 
-    iniciar_juego(2, 3);
-    mostrar_bytes();
-    mostrar_tablero();
-    pedir_eliminacion();
-    mostrar_bytes();
-    mostrar_tablero();
+    int f_ini = 0;
+    int c_ini = 0;
+
+    cout << "ingrese la cantidad de filas iniciales: ";
+    cin >> f_ini;
+    cout << "ingrese la cantidad de columnas iniciales: ";
+    cin >> c_ini;
+
+    iniciar_juego(f_ini, c_ini);
+
+    int opcion = -1;
+    while (opcion != 0) {
+        mostrar_bytes();
+        mostrar_tablero();
+
+        cout << "\n--- menu de opciones ---\n";
+        cout << "1. eliminar una ficha\n";
+        cout << "2. agregar una fila\n";
+        cout << "3. eliminar una fila\n";
+        cout << "4. agregar una columna\n";
+        cout << "5. eliminar una columna\n";
+        cout << "0. salir\n";
+        cout << "seleccione una opcion: ";
+        cin >> opcion;
+
+        // se procesa la opc elegida
+        switch (opcion) {
+            case 1: {
+                int f = 0, c = 0;
+                cout << "fila: ";
+                cin >> f;
+                cout << "columna: ";
+                cin >> c;
+                eliminar_ficha(f, c);
+                break;
+            }
+            case 2:
+                agregar_fila_juego();
+                break;
+            case 3:
+                eliminar_fila_juego();
+                break;
+            case 4:
+                agregar_columna_juego();
+                break;
+            case 5:
+                eliminar_columna_juego();
+                break;
+            case 0:
+                cout << "\nsaliendo del juego...\n";
+                break;
+            default:
+                cout << "\nopcion no valida, intente de nuevo.\n";
+                break;
+        }
+    }
+
     destruir_tablero();
+    cout << "gracias por jugar!\n";
 }
