@@ -12,62 +12,63 @@ int indice_de(int fila, int columna, int cantidad_columnas)
     return fila * cantidad_columnas + columna;
 }
 
+// funcion para cambiar el tamano del tablero agregando o quitando filas y columnas
 void reconstruir(int nuevas_filas, int nuevas_columnas, int posicion_fila, int posicion_columna, bool insertar_fila, bool insertar_columna)
 {
-    // crea otro bloque para mover las fichas sin perder datos
-    int nuevas_posiciones = nuevas_filas * nuevas_columnas;
-    int nuevos_bytes = bytes_necesarios(nuevas_posiciones);
-    unsigned char* nueva_memoria = new unsigned char[nuevos_bytes];
-    limpiar_bytes(nueva_memoria, nuevos_bytes);
+    int total_fichas = nuevas_filas * nuevas_columnas;
+    int bytes_nuevos = bytes_necesarios(total_fichas);
+    
+    // creamos un bloque aux en memoria dinamica para copiar las fichas viejas
+    unsigned char* aux = new unsigned char[bytes_nuevos];
+    limpiar_bytes(aux, bytes_nuevos);
 
-    for (int fila_nueva = 0; fila_nueva < nuevas_filas; ++fila_nueva) {
-        for (int columna_nueva = 0; columna_nueva < nuevas_columnas; ++columna_nueva) {
-            int fila_anterior = fila_nueva;
-            int columna_anterior = columna_nueva;
+    // recorremos cada casilla del nuevo tablero para calcular su posicion previa
+    for (int f = 0; f < nuevas_filas; ++f) {
+        for (int c = 0; c < nuevas_columnas; ++c) {
+            int orig_f = f;
+            int orig_c = c;
 
-            if (insertar_fila && fila_nueva > posicion_fila) {
-                fila_anterior = fila_nueva - 1;
-            }
-            if (!insertar_fila && nuevas_filas < filas && fila_nueva >= posicion_fila) {
-                fila_anterior = fila_nueva + 1;
-            }
-            if (insertar_columna && columna_nueva > posicion_columna) {
-                columna_anterior = columna_nueva - 1;
-            }
-            if (!insertar_columna && nuevas_columnas < columnas && columna_nueva >= posicion_columna) {
-                columna_anterior = columna_nueva + 1;
+            // si insertamos o quitamos fila, se mueve el indice de origen
+            if (insertar_fila && f > posicion_fila) {
+                orig_f = f - 1;
+            } else if (!insertar_fila && nuevas_filas < filas && f >= posicion_fila) {
+                orig_f = f + 1;
             }
 
-            bool fila_valida = fila_anterior >= 0 && fila_anterior < filas;
-            bool columna_valida = columna_anterior >= 0 && columna_anterior < columnas;
-            bool es_nueva_fila = insertar_fila && fila_nueva == posicion_fila;
-            bool es_nueva_columna = insertar_columna && columna_nueva == posicion_columna;
+            // si insertamos o quitamos columna, se mueve el indice de origen
+            if (insertar_columna && c > posicion_columna) {
+                orig_c = c - 1;
+            } else if (!insertar_columna && nuevas_columnas < columnas && c >= posicion_columna) {
+                orig_c = c + 1;
+            }
 
-            if (fila_valida && columna_valida && !es_nueva_fila && !es_nueva_columna) {
-                unsigned char ficha = leer_ficha(memoria, indice_de(fila_anterior, columna_anterior, columnas));
-                escribir_ficha(nueva_memoria, indice_de(fila_nueva, columna_nueva, nuevas_columnas), ficha);
+            // comprobamos que la casilla de origen fuera valida y no sea la casilla nueva insertada
+            if (orig_f >= 0 && orig_f < filas && orig_c >= 0 && orig_c < columnas) {
+                bool es_insertada = (insertar_fila && f == posicion_fila) || (insertar_columna && c == posicion_columna);
+                if (!es_insertada) {
+                    unsigned char ficha = leer_ficha(memoria, indice_de(orig_f, orig_c, columnas));
+                    escribir_ficha(aux, indice_de(f, c, nuevas_columnas), ficha);
+                }
             }
         }
     }
 
-    // si crece o queda muy lleno, se hace otro bloque
-    bool necesita_nuevo_bloque = nuevos_bytes > bytes
-        || nuevos_bytes * 100 < bytes * 65;
-
-    if (necesita_nuevo_bloque) {
+    // si se necesita mas espacio o la ocupacion cae del 65%, asignamos bloque nuevo en memoria
+    if (bytes_nuevos > bytes || bytes_nuevos * 100 < bytes * 65) {
         delete[] memoria;
-        memoria = nueva_memoria;
-        bytes = nuevos_bytes;
+        memoria = aux;
+        bytes = bytes_nuevos;
     } else {
-        // se conserva el bloque cuando todavia tiene espacio suficiente
+        // si todavia cabe bien en el bloque actual, reutilizamos la memoria existente
         limpiar_bytes(memoria, bytes);
-        for (int indice = 0; indice < nuevas_posiciones; ++indice) {
-            unsigned char ficha = leer_ficha(nueva_memoria, indice);
-            escribir_ficha(memoria, indice, ficha);
+        for (int i = 0; i < total_fichas; ++i) {
+            unsigned char ficha = leer_ficha(aux, i);
+            escribir_ficha(memoria, i, ficha);
         }
-        delete[] nueva_memoria;
+        delete[] aux;
     }
 
+    // guardamos las dimensiones actualizadas
     filas = nuevas_filas;
     columnas = nuevas_columnas;
 }
