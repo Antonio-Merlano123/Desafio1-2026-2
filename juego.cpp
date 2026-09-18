@@ -126,6 +126,7 @@ void aplicar_gravedad()
     }
 }
 
+// resuelve el ciclo encadenado de combinaciones, eliminaciones, gravedad y relleno hasta estabilizar
 void resolver_cascadas()
 {
     cascadas = 0;
@@ -133,13 +134,14 @@ void resolver_cascadas()
         int borradas = eliminar_marcadas();
         ++combinaciones;
         fichas_eliminadas += borradas;
-        totalpuntos += borradas * (cascadas + 1); // cada cascada extra vale mas
+        totalpuntos += borradas * (cascadas + 1);
         aplicar_gravedad();
         llenar_vacios();
         ++cascadas;
     }
-    if (cascadas > 0)
-        --cascadas; // el ultimo ciclo no genera caida real, se descuenta
+    if (cascadas > 0) {
+        --cascadas;
+    }
 }
 
 void rellenar_despues_de_cambio()
