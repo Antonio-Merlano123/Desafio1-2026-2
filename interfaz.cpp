@@ -38,6 +38,19 @@ void mostrar_tablero()
     }
 }
 
+// muestra las estadisticas e indicadores de la partida
+void mostrar_estadisticas()
+{
+    cout << "\n--- estado del juego ---\n";
+    cout << "dimensiones actuales: " << obtener_filas() << " x " << obtener_columnas() << "\n";
+    cout << "movimientos del usuario: " << obtener_movimientos() << "\n";
+    cout << "fichas eliminadas en total: " << obtener_fichas_eliminadas() << "\n";
+    cout << "combinaciones detectadas: " << obtener_combinaciones() << "\n";
+    cout << "cascadas producidas: " << obtener_cascadas() << "\n";
+    cout << "puntuacion obtenida: " << obtener_puntaje() << "\n";
+    cout << "bytes de memoria usados: " << obtener_bytes() << "\n";
+}
+
 // bucle del menu para pedir la jugada
 void mostrar_interfaz()
 {
@@ -57,6 +70,7 @@ void mostrar_interfaz()
     while (opcion != 0) {
         mostrar_bytes();
         mostrar_tablero();
+        mostrar_estadisticas();
 
         cout << "\n--- menu de opciones ---\n";
         cout << "1. eliminar una ficha\n";
