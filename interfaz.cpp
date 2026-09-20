@@ -61,12 +61,14 @@ void mostrar_interfaz()
 
     cout << "ingrese la cantidad de filas iniciales: ";
     while (!(cin >> f_ini) || f_ini <= 0) {
+        if (cin.eof()) { cout << "\n[Error: Consola no interactiva detectada. Habilite 'Run in terminal' en Qt Creator]\n"; exit(1); }
         cin.clear();
         cin.ignore(10000, '\n');
         cout << "por favor ingrese un numero valido: ";
     }
     cout << "ingrese la cantidad de columnas iniciales: ";
     while (!(cin >> c_ini) || c_ini <= 0) {
+        if (cin.eof()) { cout << "\n[Error: Consola no interactiva detectada. Habilite 'Run in terminal' en Qt Creator]\n"; exit(1); }
         cin.clear();
         cin.ignore(10000, '\n');
         cout << "por favor ingrese un numero valido: ";
@@ -90,6 +92,7 @@ void mostrar_interfaz()
         cout << "seleccione una opcion: ";
         
         if (!(cin >> opcion)) {
+            if (cin.eof()) { cout << "\n[Error: Consola no interactiva]\n"; exit(1); }
             cin.clear();
             cin.ignore(10000, '\n');
             opcion = -1;
