@@ -60,9 +60,17 @@ void mostrar_interfaz()
     int c_ini = 0;
 
     cout << "ingrese la cantidad de filas iniciales: ";
-    cin >> f_ini;
+    while (!(cin >> f_ini) || f_ini <= 0) {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "por favor ingrese un numero valido: ";
+    }
     cout << "ingrese la cantidad de columnas iniciales: ";
-    cin >> c_ini;
+    while (!(cin >> c_ini) || c_ini <= 0) {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "por favor ingrese un numero valido: ";
+    }
 
     iniciar_juego(f_ini, c_ini);
 
@@ -80,16 +88,21 @@ void mostrar_interfaz()
         cout << "5. eliminar una columna\n";
         cout << "0. salir\n";
         cout << "seleccione una opcion: ";
-        cin >> opcion;
+        
+        if (!(cin >> opcion)) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            opcion = -1;
+        }
 
         // se procesa la opc elegida
         switch (opcion) {
             case 1: {
                 int f = 0, c = 0;
                 cout << "fila: ";
-                cin >> f;
+                if (!(cin >> f)) { cin.clear(); cin.ignore(10000, '\n'); break; }
                 cout << "columna: ";
-                cin >> c;
+                if (!(cin >> c)) { cin.clear(); cin.ignore(10000, '\n'); break; }
                 eliminar_ficha(f, c);
                 break;
             }
