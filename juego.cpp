@@ -14,7 +14,7 @@ int cascadas          = 0;
 
 unsigned char ficha_aleatoria()
 {
-    // formula lineal clasica para no usar rand ni nada de ansi
+    // genero numeros aleatorios con multiplicacion porque no me dejan usar librerias
     semilla = semilla * 1103515245u + 12345u;
     return static_cast<unsigned char>((semilla >> 16) % 6);
 }
@@ -204,8 +204,20 @@ void eliminar_columna_juego()
     }
 }
 
-int obtener_puntaje()           { return totalpuntos; }
-int obtener_movimientos()       { return movimientos; }
-int obtener_fichas_eliminadas() { return fichas_eliminadas; }
-int obtener_combinaciones()     { return combinaciones; }
-int obtener_cascadas()          { return cascadas; }
+int obtener_puntaje() {
+    return totalpuntos;
+}
+
+int obtener_movimientos() { 
+    return movimientos; 
+}
+
+int obtener_fichas_eliminadas() {
+    return fichas_eliminadas;
+}
+
+int obtener_combinaciones() { return combinaciones; }
+
+int obtener_cascadas() {
+    return cascadas;
+}
